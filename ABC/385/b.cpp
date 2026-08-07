@@ -1,0 +1,99 @@
+#include <bits/stdc++.h>
+#include <atcoder/all>
+#pragma GCC optimize("O3")
+using namespace std;
+using namespace atcoder;
+using ll = long long;
+using ull = unsigned long long;
+using vi = vector<int>;
+using vll = vector<ll>;
+using vs = vector<string>;
+using vb = vector<bool>;
+using vc = vector<char>;
+using vf = vector<float>;
+using vd = vector<double>;
+using vvi = vector<vector<int>>;
+using vvll = vector<vector<ll>>;
+using vvs = vector<vector<string>>;
+using vvc = vector<vector<char>>;
+using vvb = vector<vector<bool>>;
+using vvf = vector<vector<float>>;
+using vvd = vector<vector<double>>;
+using pi = pair<int, int>;
+using pll = pair<ll, ll>;
+using vpi = vector<pi>;
+using vpll = vector<pll>;
+#define cYes cout << "YES\n"
+#define cNo cout << "NO\n"
+#define cyes cout << "Yes\n"
+#define cno cout << "No\n"
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+template <typename T>
+inline istream& operator >> (istream& is, vector<T>& v){
+    for(size_t i=0; i<v.size(); i++){
+        is >> v[i];
+    }
+    return is;
+}
+template <typename T, typename U>
+inline istream& operator >> (istream& is, vector<pair<T,U>>& v){
+    for(size_t i=0; i<v.size(); i++){
+        is >> v[i].first >> v[i].second;
+    }
+    return is;
+}
+template <typename T>
+inline istream& operator >> (istream& is, vector<vector<T>>& v){
+    for(size_t i=0; i<v.size(); i++){
+        for(size_t j=0; j<v[i].size(); j++){
+            is >> v[i][j];
+        }
+    }
+    return is;
+}
+template <typename T, typename U, typename S, typename V>
+inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v){
+    for(size_t i=0; i<v.size(); i++){
+        is >> v[i].first.first >> v[i].first.second >> v[i].second.first >> v[i].second.second;
+    }
+    return is;
+}
+const double PI = 3.14159265359;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int H, W, X, Y;
+    cin >> H >> W >> X >> Y;
+    vvc S(H, vc(W));
+    cin >> S;
+    string T;
+    cin >> T;
+    int ans = 0;
+    for(int i=0; i<T.size(); i++){
+        if(T[i] == 'U'){
+            if(1 <= X-1 && S[X-2][Y-1] != '#'){
+                X -= 1;
+            }
+        }else if(T[i] == 'D'){
+            if(H >= X+1 && S[X][Y-1] != '#'){
+                X += 1;
+            }
+        }else if(T[i] == 'L'){
+            if(1 <= Y-1 && S[X-1][Y-2] != '#'){
+                Y -= 1;
+            }
+        }else{
+            if(W >= Y+1 && S[X-1][Y] != '#'){
+                Y += 1;
+            }
+        }
+        if(S[X-1][Y-1] == '@'){
+            ans++;
+            S[X-1][Y-1] = '.';
+        }
+    }
+    cout << X << " " << Y << " " << ans << "\n";
+}

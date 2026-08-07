@@ -1,0 +1,12 @@
+# in/out
+in.txt
+out.txt
+
+# C/C++
+*.out
+
+# heuristic tools
+*/tools/
+
+# vscode configration
+.vscode/

@@ -1,0 +1,53 @@
+#include <bits/stdc++.h>
+#include <atcoder/all>
+#pragma GCC optimize("O3")
+using namespace std;
+using namespace atcoder;
+using ll = long long;
+using ull = unsigned long long;
+using vi = vector<int>;
+using vll = vector<ll>;
+using vs = vector<string>;
+using vb = vector<bool>;
+using vc = vector<char>;
+using vvi = vector<vector<int>>;
+using vvll = vector<vector<ll>>;
+using vvs = vector<vector<string>>;
+using vvc = vector<vector<char>>;
+using vvb = vector<vector<bool>>;
+using pi = pair<int, int>;
+using pll = pair<ll, ll>;
+using vpi = vector<pi>;
+using vpll = vector<pll>;
+#define cYes cout << "YES\n"
+#define cNo cout << "NO\n"
+#define cyes cout << "Yes\n"
+#define cno cout << "No\n"
+
+bool kaibun(string S){
+    int l=0, r=S.size()-1;
+    while(l<r){
+        if(S[l] != S[r]) return false;
+        r--;
+        l++;
+    }
+    return true;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    string S;
+    cin >> S;
+    int ans = 0;
+    for(int i=0; i<S.size(); i++){
+        string tmp = "";
+        for(int j=i; j<S.size(); j++){
+            tmp += S[j];
+            if(kaibun(tmp)){
+                ans = max(ans, j+1-i);
+            }
+        }
+    }
+    cout << ans << "\n";
+}
