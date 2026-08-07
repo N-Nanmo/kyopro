@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-
 #include <atcoder/all>
 #pragma GCC optimize("O3")
 using namespace std;
@@ -66,334 +65,156 @@ inline istream& operator>>(istream& is,
 }
 const double PI = 3.14159265359;
 
-const int DX[4] = {1, -1, 0, 0};
-const int DY[4] = {0, 0, 1, -1};
-
-bool inside(int x, int y, int N) {
-    return 0 <= x && x < N && 0 <= y && y < N;
-}
-
-// 時刻Sにおいて使用可能なマスか
-bool isFreeCell(
-    const vvll& G,
-    int x,
-    int y,
-    int S
-) {
-    if (G[x][y] == -1) {
-        return false;
-    }
-
-    // 退去時刻がS以上なら、まだ利用中
-    if (G[x][y] >= S) {
-        return false;
-    }
-
-    return true;
-}
-
-// 長方形領域が使用可能か
-bool isRectangleOk(vvll& G, int S, int h, int w, int x, int y, int N) {
-    if (x + h > N || y + w > N) return false;
-    for (int i = x; i < x + h; i++) {
-        for (int j = y; j < y + w; j++) {
-            if (!isFreeCell) return false;
+// 引用:https://qiita.com/sorachandu/items/041169d34b9f9b99bcf7
+// std::chronoを利用した時間計測用クラス
+class Timer{
+    chrono::system_clock::time_point start;
+    public:
+        Timer() : start(chrono::system_clock::now()) {}
+    
+        double count(){
+            chrono::duration<double> Time_ = chrono::system_clock::now() - start;
+            return Time_.count();
         }
-    }
-    return true;
-}
 
-// 候補マスが現在の領域と何辺接しているか
-int countAdjacent(
-    int x,
-    int y,
-    const vector<vector<bool>>& selected,
-    int N
-) {
-    int result = 0;
-
-    for (int dir = 0; dir < 4; dir++) {
-        int nx = x + DX[dir];
-        int ny = y + DY[dir];
-
-        if (
-            inside(nx, ny, N) &&
-            selected[nx][ny]
-        ) {
-            result++;
+        bool is_under(double x){
+            return (this -> count()) < x;
         }
-    }
+};
 
-    return result;
-}
+const int dx[4] = {-1, 1, 0, 0};
+const int dy[4] = {0, 0, -1, 1};
 
 struct Candidate {
-    int adjacent;
-    int distance;
-    int x;
-    int y;
+    int perimeter;
+    vector<pi> cells;
 };
 
-// priority_queueの先頭を最も良い候補にする
-struct CompareCandidate {
-    bool operator()(
-        const Candidate& a,
-        const Candidate& b
-    ) const {
-        // 接している辺数が多い方を優先
-        if (a.adjacent != b.adjacent) {
-            return a.adjacent < b.adjacent;
-        }
-
-        // 開始地点に近い方を優先
-        if (a.distance != b.distance) {
-            return a.distance > b.distance;
-        }
-
-        // 同点なら座標順
-        if (a.x != b.x) {
-            return a.x > b.x;
-        }
-
-        return a.y > b.y;
-    }
-};
-
-// 1つの開始地点から、Pマスの連結領域を作る
-vector<pi> makeCompactRegion(
-    const vvll& G,
-    int N,
-    int S,
-    int P,
-    int startX,
-    int startY
-) {
-    if (!isFreeCell(G, startX, startY, S)) {
-        return {};
-    }
-
-    vector<vector<bool>> selected(
-        N,
-        vector<bool>(N, false)
-    );
-
-    vector<pi> region;
-    region.reserve(P);
-
-    priority_queue<
-        Candidate,
-        vector<Candidate>,
-        CompareCandidate
-    > candidates;
-
-    selected[startX][startY] = true;
-    region.emplace_back(startX, startY);
-
-    auto pushNeighbor = [&](int x, int y) {
-        if (!inside(x, y, N)) {
-            return;
-        }
-
-        if (selected[x][y]) {
-            return;
-        }
-
-        if (!isFreeCell(G, x, y, S)) {
-            return;
-        }
-
-        int adjacent = countAdjacent(
-            x,
-            y,
-            selected,
-            N
-        );
-
-        // 現在の領域に接していなければ候補ではない
-        if (adjacent == 0) {
-            return;
-        }
-
-        int distance =
-            abs(x - startX) +
-            abs(y - startY);
-
-        candidates.push({
-            adjacent,
-            distance,
-            x,
-            y
-        });
-    };
-
-    // 開始地点の周囲を候補に追加
-    for (int dir = 0; dir < 4; dir++) {
-        pushNeighbor(
-            startX + DX[dir],
-            startY + DY[dir]
-        );
-    }
-
-    while (
-        !candidates.empty() &&
-        static_cast<int>(region.size()) < P
-    ) {
-        Candidate candidate = candidates.top();
-        candidates.pop();
-
-        int x = candidate.x;
-        int y = candidate.y;
-
-        // 同じマスが複数回queueに入ることがある
-        if (selected[x][y]) {
-            continue;
-        }
-
-        // 領域が成長したため、接触辺数を再計算
-        int currentAdjacent = countAdjacent(
-            x,
-            y,
-            selected,
-            N
-        );
-
-        if (currentAdjacent == 0) {
-            continue;
-        }
-
-        /*
-         * queueに入れた時点より接触辺数が変わった場合、
-         * 現在の値で入れ直す。
-         */
-        if (currentAdjacent != candidate.adjacent) {
-            candidate.adjacent = currentAdjacent;
-            candidates.push(candidate);
-            continue;
-        }
-
-        // 領域へ追加
-        selected[x][y] = true;
-        region.emplace_back(x, y);
-
-        // 新しく追加したマスの周囲を候補に追加
-        for (int dir = 0; dir < 4; dir++) {
-            pushNeighbor(
-                x + DX[dir],
-                y + DY[dir]
-            );
-        }
-    }
-
-    if (static_cast<int>(region.size()) != P) {
-        return {};
-    }
-
-    return region;
+bool isRectangleOk(int &x, int &y, int &h, int &w, vvi &blockedSum) {
+    int blocked = blockedSum[x + h][y + w] - blockedSum[x + h][y] - blockedSum[x][y + w] + blockedSum[x][y];
+    return blocked == 0;
 }
 
-// 領域の周長を計算
-int calcPerimeter(
-    const vector<pi>& region,
-    int N
-) {
-    vector<vector<bool>> selected(
-        N,
-        vector<bool>(N, false)
-    );
+bool isFreeCell(const vvll& G, int S, int x, int y, int N){
+    return (0 <= x && x < N && 0 <= y && y < N && G[x][y] != -1 && G[x][y] < S);
+}
 
-    for (auto [x, y] : region) {
-        selected[x][y] = true;
+struct GreedyWorkspace {
+    vector<pi> cells;
+    array<vector<pi>, 5> buckets;
+    vi selectedStamp;
+    vi frontierStamp;
+    vector<unsigned char> touch;
+    int currentStamp = 0;
+
+    explicit GreedyWorkspace(int N)
+        : selectedStamp(N * N, 0),
+          frontierStamp(N * N, 0),
+          touch(N * N, 0) {
+        cells.reserve(150);
+        for(auto& bucket : buckets){
+            bucket.reserve(150 * 4);
+        }
     }
 
-    int perimeter = 0;
-
-    for (auto [x, y] : region) {
-        for (int dir = 0; dir < 4; dir++) {
-            int nx = x + DX[dir];
-            int ny = y + DY[dir];
-
-            if (
-                !inside(nx, ny, N) ||
-                !selected[nx][ny]
-            ) {
-                perimeter++;
-            }
+    void beginSearch(){
+        if(currentStamp == numeric_limits<int>::max()){
+            fill(all(selectedStamp), 0);
+            fill(all(frontierStamp), 0);
+            currentStamp = 1;
+        }else{
+            currentStamp++;
         }
+
+        cells.clear();
+        for(auto& bucket : buckets){
+            bucket.clear();
+        }
+    }
+
+    bool isSelected(int id) const {
+        return selectedStamp[id] == currentStamp;
+    }
+};
+
+// 成功時は周長を、失敗時は -1 を返す。選んだマスは workspace.cells に残す。
+int makeGreedyCandidate(const vvll& G, int S, int P, int sx, int sy,
+                        int N, GreedyWorkspace& workspace){
+    if(!isFreeCell(G, S, sx, sy, N)) return -1;
+    workspace.beginSearch();
+
+    // 新しく選んだマスの周囲について、領域との接触辺数を1増やす。
+    auto pushNeighbors = [&](int x, int y){
+        for(int d=0; d<4; d++){
+            int nx = x + dx[d];
+            int ny = y + dy[d];
+
+            if(!isFreeCell(G, S, nx, ny, N)) continue;
+
+            int id = nx * N + ny;
+            if(workspace.isSelected(id)) continue;
+
+            if(workspace.frontierStamp[id] != workspace.currentStamp){
+                workspace.frontierStamp[id] = workspace.currentStamp;
+                workspace.touch[id] = 0;
+            }
+
+            workspace.touch[id]++;
+            workspace.buckets[workspace.touch[id]].emplace_back(nx, ny);
+        }
+    };
+
+    workspace.selectedStamp[sx * N + sy] = workspace.currentStamp;
+    workspace.cells.emplace_back(sx, sy);
+    pushNeighbors(sx, sy);
+
+    int perimeter = 4;
+
+    while((int)workspace.cells.size() < P){
+        int chosenX = -1;
+        int chosenY = -1;
+        int chosenTouch = 0;
+
+        // 接触辺数が多いマスを優先する。
+        for(int score=4; score>=1; score--){
+            auto& bucket = workspace.buckets[score];
+
+            while(!bucket.empty()){
+                auto [x, y] = bucket.back();
+                bucket.pop_back();
+
+                int id = x * N + y;
+                if(workspace.isSelected(id)) continue;
+                if(workspace.frontierStamp[id] != workspace.currentStamp) continue;
+                if(workspace.touch[id] != score) continue;
+
+                chosenX = x;
+                chosenY = y;
+                chosenTouch = score;
+                break;
+            }
+
+            if(chosenX != -1) break;
+        }
+
+        if(chosenX == -1) return -1;
+
+        workspace.selectedStamp[chosenX * N + chosenY] = workspace.currentStamp;
+        workspace.cells.emplace_back(chosenX, chosenY);
+
+        // 新しい4辺を加え、既存領域との共有辺を両側から除く。
+        perimeter += 4 - 2 * chosenTouch;
+        pushNeighbors(chosenX, chosenY);
     }
 
     return perimeter;
-}
-
-// 全開始地点を試し、最も周長が短い領域を返す
-vector<pi> findCompactRegion(
-    const vvll& G,
-    int N,
-    int S,
-    int P
-) {
-    vector<pi> bestRegion;
-    vector<pi> bestNormalized;
-
-    int bestPerimeter =
-        numeric_limits<int>::max();
-
-    for (int startX = 0; startX < N; startX++) {
-        for (int startY = 0; startY < N; startY++) {
-            if (!isFreeCell(G, startX, startY, S)) {
-                continue;
-            }
-
-            vector<pi> region = makeCompactRegion(
-                G,
-                N,
-                S,
-                P,
-                startX,
-                startY
-            );
-
-            if (region.empty()) {
-                continue;
-            }
-
-            int perimeter = calcPerimeter(
-                region,
-                N
-            );
-
-            // 同じ周長のときの比較用
-            vector<pi> normalized = region;
-            sort(normalized.begin(), normalized.end());
-
-            bool update = false;
-
-            if (perimeter < bestPerimeter) {
-                update = true;
-            } else if (
-                perimeter == bestPerimeter &&
-                (
-                    bestRegion.empty() ||
-                    normalized < bestNormalized
-                )
-            ) {
-                update = true;
-            }
-
-            if (update) {
-                bestPerimeter = perimeter;
-                bestRegion = region;
-                bestNormalized = normalized;
-            }
-        }
-    }
-
-    return bestRegion;
 }
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
+    Timer timer;
     // Input
     int N, M;
     double R;
@@ -411,83 +232,152 @@ int main() {
         }
     }
 
+    // 全ターン・全始点の貪欲探索で使い回す。
+    GreedyWorkspace greedyWorkspace(N);
+
     for (int m = 0; m < M; m++) {
+
+        // Input
         int I, S, T, P, V;
         cin >> I >> S >> T >> P >> V;
 
-        bool finish = false;
+        bool finished = false;
 
-        // 移動は行わない
+        // 累積和
+        vvi blockedSum(N + 1, vi(N + 1, 0));
+
+        //最小周長
+        int lowerPerimeter = 2 * (int)ceil(2.0 * sqrt(P));
+
+        for(int x = 0; x < N; x++){
+            for(int y = 0; y < N; y++){
+                int blocked = (G[x][y] == -1 || G[x][y] >= S) ? 1 : 0;
+                blockedSum[x + 1][y + 1] = blockedSum[x + 1][y] + blockedSum[x][y + 1] - blockedSum[x][y] + blocked;
+            }
+        }
+
         cout << 0 << "\n";
+        optional<Candidate> best;
 
-        // 正方形に近い長方形(over2xX)を探す
-        vector<pair<pi, pi>> Y;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                for (int h = 2; h*h <= P; h++) {
-                    if (P % h == 0) {
-                        Y.emplace_back(make_pair(h, P / h), make_pair(i, j));
-                        if(h != P/h) Y.emplace_back(make_pair(P / h, h), make_pair(i, j));
-                    }
-                }
+        auto updateBest = [&](Candidate&& candidate){
+            if (!best || candidate.perimeter < best->perimeter || (candidate.perimeter == best->perimeter && candidate.cells < best->cells)) {
+                best = move(candidate);
             }
-        }
-        sort(all(Y), [](const pair<pi, pi>& a, const pair<pi,pi>& b) {
-            int diffa = abs(a.first.first - a.first.second);
-            int diffb = abs(b.first.first - b.first.second);
-            if (diffa != diffb)
-                return diffa < diffb;
-            else if(a.first.first != b.first.first){
-                return a.first.first < b.first.first;
-            }else if(a.first.second != b.first.second){
-                return a.first.second < b.first.second;
-            }else if(a.second.first != b.second.first){
-                return a.second.first < b.second.first;
-            }else{
-                return a.second.second < b.second.second;
-            }
-        });
-        for (auto hw : Y) {
-            if (P % hw.first.first != 0) continue;
-            if (isRectangleOk(G, S, hw.first.first, hw.first.second, hw.second.first, hw.second.second, N)) {
-                cout << "Yes" << "\n";
-                for (int ip = hw.second.first; ip < hw.second.first + hw.first.first; ip++) {
-                    for (int jp = hw.second.second; jp < hw.second.second + (P / hw.first.first); jp++) {
-                        G[ip][jp] = T;
-                        cout << ip << " " << jp << "\n";
-                    }
-                }
-                finish = true;
-            }
-            if (finish) break;
-        }
-
-        /*
-         * 第2段階：
-         * 長方形で配置できない場合、
-         * 自由形状のコンパクトな連結領域を探す
-         */
-        if (!finish) {
-            vector<pi> region = findCompactRegion(
-                G,
-                N,
-                S,
-                P
-            );
-
-            if (!region.empty()) {
-                cout << "Yes\n";
-
-                for (auto [x, y] : region) {
-                    G[x][y] = T;
-                    cout << x << ' ' << y << '\n';
-                }
-
-                finish = true;
-            }
-        }
+        };
         
-        if (!finish) cout << "No" << "\n";
+        // 長方形で考える
+        for(int h=1; h*h <= P; h++){
+            if(P%h != 0) continue;
+
+            int w = P/h;
+
+            vpi shapes{{h, w}};
+            if(h != w) shapes.emplace_back(w, h);
+            for(auto [rh, rw] : shapes){
+
+                for(int i=0; i+rh <= N; i++){
+                    for(int j=0; j+rw <= N; j++){
+                        if(!isRectangleOk(i, j, rh, rw, blockedSum)) continue;
+
+                        vector<pi> cells;
+                        cells.reserve(P);
+
+                        for(int x=i; x<i+rh; x++){
+                            for(int y=j; y<j+rw; y++){
+                                cells.emplace_back(x, y);
+                            }
+                        }
+
+                        updateBest({2 * (rh + rw), move(cells)});
+                        if((best && best->perimeter == lowerPerimeter) || finished){
+                            finished = true;
+                            break;
+                        }
+                    }
+                    if(finished) break;
+                }
+                if(finished) break;
+            }
+            if(finished) break;
+        }
+
+        bool needGreedy = !best || best->perimeter > lowerPerimeter+3;
+        // 辺数貪欲で考える
+        if(needGreedy){
+            // 各空きマスが属する連結成分のサイズを求める。
+            // サイズが P 未満なら、その成分から P マスの連結領域は作れない。
+            vvi componentSize(N, vi(N, 0));
+            vvb visited(N, vb(N, false));
+
+            for(int x = 0; x < N; x++){
+                for(int y = 0; y < N; y++){
+                    if(visited[x][y] || !isFreeCell(G, S, x, y, N)) continue;
+
+                    queue<pi> que;
+                    vector<pi> component;
+                    visited[x][y] = true;
+                    que.emplace(x, y);
+
+                    while(!que.empty()){
+                        auto [cx, cy] = que.front();
+                        que.pop();
+                        component.emplace_back(cx, cy);
+
+                        for(int d = 0; d < 4; d++){
+                            int nx = cx + dx[d];
+                            int ny = cy + dy[d];
+
+                            if(!isFreeCell(G, S, nx, ny, N)) continue;
+                            if(visited[nx][ny]) continue;
+
+                            visited[nx][ny] = true;
+                            que.emplace(nx, ny);
+                        }
+                    }
+
+                    int size = component.size();
+                    for(auto [cx, cy] : component){
+                        componentSize[cx][cy] = size;
+                    }
+                }
+            }
+
+            for(int sx = 0; sx < N; sx++){
+                for(int sy = 0; sy < N; sy++){
+                    if(componentSize[sx][sy] < P) continue;
+                    int perimeter = makeGreedyCandidate(
+                        G, S, P, sx, sy, N, greedyWorkspace
+                    );
+
+                    // 最良候補を更新するときだけセル列をコピーする。
+                    if(perimeter != -1 &&
+                       (!best || perimeter < best->perimeter ||
+                        (perimeter == best->perimeter &&
+                         greedyWorkspace.cells < best->cells))){
+                        updateBest({perimeter, greedyWorkspace.cells});
+                    }
+                    if((best && best->perimeter == lowerPerimeter) || finished){
+                        finished = true;
+                        break;
+                    }
+                }
+                if(finished) break;
+            }
+        }   
+
+        // Output
+        if(!best){
+            cout << "No\n" << flush;
+            continue;
+        }
+        cout << "Yes" << "\n";
+
+        for(auto [x, y] : best->cells){
+            G[x][y] = T;
+            cout << x << ' ' << y << "\n";
+        }
+
         cout << flush;
     }
+    cerr << timer.count() << "\n";
 }

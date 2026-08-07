@@ -1,6 +1,8 @@
 # in/out
 in.txt
+input.txt
 out.txt
+output.txt
 
 # C/C++
 *.out
@@ -10,3 +12,7 @@ out.txt
 
 # vscode configration
 .vscode/
+.code/
+
+# clangd
+.clangd
