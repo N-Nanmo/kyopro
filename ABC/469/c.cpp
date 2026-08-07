@@ -67,5 +67,14 @@ const double PI = 3.14159265359;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    ll N;
+    string S;
+    cin >> N >> S;
+    ll add = 0;
+    for(ll i=0; i<S.size(); i++){
+        while(i+add < S.size() && S[i+add] == 'o'){
+            add++;
+        }
+        cout << min(N-1, i+add)+1 << "\n";
+    }
 }
