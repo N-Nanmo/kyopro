@@ -27,5 +27,17 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    ll N, T;
+    cin >> N >> T;
+    vll t(N);
+    for(int i=0; i<N; i++){
+        cin >> t[i];
+    }
+    ll ans = T;
+    ll crr = t[0]+T;
+    for(int i=1; i<N; i++){
+        ans += min(T, t[i]+T-crr);
+        crr = t[i]+T;
+    }
+    cout << ans << "\n";
 }
