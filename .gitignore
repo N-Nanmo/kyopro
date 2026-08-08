@@ -8,7 +8,7 @@ output.txt
 *.out
 
 # heuristic tools
-*/tools/
+**/tools/
 
 # vscode configration
 .vscode/
