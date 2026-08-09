@@ -1,3 +1,4 @@
+#include "atcoder/modint.hpp"
 #include <bits/stdc++.h>
 #include <atcoder/all>
 #pragma GCC optimize("O3")
@@ -68,46 +69,32 @@ vi DY = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    int N;
+    ll N;
     cin >> N;
-    vector<vector<pll>> A(N);
-    for(int i=0; i<N; i++){
-        int a;
-        cin >> a;
-        A.reserve(a);
-        for(int j=0; j<a; j++){
-            int b, c;
-            cin >> b >> c;
-            A[i].push_back({b, c});
-        }
-    }
-    ll ans = 0;
-    for(int bit=0; bit<(1<<N); bit++){
-        bool flag = true;
-        for(int i=0; i<N; i++){
-            if(bit & (1 << i)){
-                for(int j=0; j<A[i].size(); j++){
-                    if((bool)(bit & (1 << (A[i][j].first-1)))){
-                        if(!(A[i][j].second)){
-                            flag = false;
-                            break;
-                        }
-                    }else{
-                        if((bool)(A[i][j].second)){
-                            flag = false;
-                            break;
-                        }
-                    }
-                }
+    vpll ST(N);
+    cin >> ST;
+    sort(all(ST));
+    modint998244353 ans = 1;
+    vll F = {-1, -1};
+    for(ll i=0; i<N; i++){
+        if(F[1] < ST[i].first && F[0] < ST[i].first){
+            ans *= 2;
+            if(F[0] < F[1]){
+                F[1] = ST[i].second;
+            }else{
+                F[0] = ST[i].second;
             }
         }
-        if(flag){
-            ll cnt = 0;
-            for(int j=0; j<N; j++){
-                if(bit & (1<<j)) cnt++;
+        else{
+            if(F[1] >= ST[i].first && F[0] >= ST[i].first){
+                cout << 0 << "\n";
+                return 0;
+            }else if(F[1] < ST[i].first){
+                F[1] = ST[i].second;
+            }else{
+                F[0] = ST[i].first;
             }
-            ans = max(ans, cnt);
         }
     }
-    cout << ans << "\n";
+    cout << ans.val() << "\n";
 }

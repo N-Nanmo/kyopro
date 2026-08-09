@@ -27,5 +27,12 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    ll N;
+    cin >> N;
+    int ans = INT_MAX;
+    for(ll i=1; i*i<=N; i++){
+        if(N%i != 0) continue;
+        ans = min(ans, (int)max(to_string(i).size(), to_string(N/i).size()));
+    }
+    cout << ans << "\n";
 }

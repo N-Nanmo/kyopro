@@ -63,8 +63,19 @@ const double PI = 3.14159265359;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    double r;
-    cin >> r;
-    cout << fixed << setprecision(10);
-    cout << r*r*PI << " " << r*2*PI << "\n";
+    ll N;
+    cin >> N;
+    vpll A(N);
+    cin >> A;
+    ll ans = LLONG_MAX;
+    for(int i=0; i<N; i++){
+        for(int o=0; o<N; o++){
+            ll cnt = 0;
+            for(int j=0; j<N; j++){
+                cnt += abs(A[i].first-A[j].first) + (A[j].second-A[j].first) + abs(A[o].second-A[j].second);
+            }
+            ans = min(ans, cnt);
+        }
+    }
+    cout << ans << "\n";
 }

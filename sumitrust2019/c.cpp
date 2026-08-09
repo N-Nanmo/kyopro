@@ -68,46 +68,14 @@ vi DY = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    int N;
-    cin >> N;
-    vector<vector<pll>> A(N);
-    for(int i=0; i<N; i++){
-        int a;
-        cin >> a;
-        A.reserve(a);
-        for(int j=0; j<a; j++){
-            int b, c;
-            cin >> b >> c;
-            A[i].push_back({b, c});
+    ll X;
+    cin >> X;
+    ll crr = X;
+    for(int i=0; i<=X/100; i++){
+        if(0 <= X-100*i && X-100*i <= 5*i){
+            cout << 1 << "\n";
+            return 0;
         }
     }
-    ll ans = 0;
-    for(int bit=0; bit<(1<<N); bit++){
-        bool flag = true;
-        for(int i=0; i<N; i++){
-            if(bit & (1 << i)){
-                for(int j=0; j<A[i].size(); j++){
-                    if((bool)(bit & (1 << (A[i][j].first-1)))){
-                        if(!(A[i][j].second)){
-                            flag = false;
-                            break;
-                        }
-                    }else{
-                        if((bool)(A[i][j].second)){
-                            flag = false;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        if(flag){
-            ll cnt = 0;
-            for(int j=0; j<N; j++){
-                if(bit & (1<<j)) cnt++;
-            }
-            ans = max(ans, cnt);
-        }
-    }
-    cout << ans << "\n";
+    cout << 0 << "\n";
 }

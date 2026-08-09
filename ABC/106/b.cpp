@@ -27,18 +27,14 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     int N;
-    int ans = 0;
     cin >> N;
+    int ans = 0;
     for(int i=1; i<=N; i++){
         int cnt = 0;
-        for(int j=i; j>0; j--){
-            if(i % j == 0){
-                cnt++;
-            }
+        for(int j=1; j<=i; j++){
+            if(i%j == 0) cnt++;
         }
-        if(cnt == 8 && i % 2 == 1){
-            ans++;
-        }
+        if(cnt == 8 && i%2 == 1) ans++;
     }
-    cout << ans << "\n";
+    cout << ans <<"\n";
 }

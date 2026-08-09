@@ -27,5 +27,11 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    ll A, B, C, X, Y;
+    cin >> A >> B >> C >> X >> Y;
+    ll ans = LLONG_MAX;
+    for(ll i=0; i<=max(X, Y); i++){
+        ans = min(ans, A*max((ll)0, (X-i))+B*max((ll)0, (Y-i))+C*2*i);
+    }
+    cout << ans << "\n";
 }
