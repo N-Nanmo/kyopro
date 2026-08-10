@@ -1,8 +1,6 @@
 #include <bits/stdc++.h>
-#include <atcoder/all>
 #pragma GCC optimize("O3")
 using namespace std;
-using namespace atcoder;
 using ll = long long;
 using ull = unsigned long long;
 using vi = vector<int>;
@@ -59,35 +57,60 @@ inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v)
     }
     return is;
 }
+const double PI = 3.14159265359;
 
-ll dfs(ll N, ll M, ll Q, vector<pair<pll, pll>> &K, vll A){
-    ll ans = 0;
-    if(A.size() == N){
-        for(int i=0; i<Q; i++){
-            if(A[K[i].first.second-1] - A[K[i].first.first-1] == K[i].second.first){
-                ans += K[i].second.second;
-            }
+ll dfs(int N, int K, vll &A, vll crr){
+    if(crr.size() == K){
+        ll exp = 0;
+        for(int i=0; i<K; i++){
+            exp += A[crr[i]];
+        }
+        string S = to_string(exp);
+        ll ans = 0;
+        for(int i=0; i<S.size(); i++){
+            ans += (S[i]-'0')%5;
+            ans += (S[i]-'0')/5;
         }
         return ans;
+    }else if(crr.size() != 0 && crr[crr.size()-1] == N-1){
+        return LLONG_MAX;
     }
-    int i = 1;
-    if(A.size() != 0) i = A[A.size()-1];
-    for(; i<=M; i++){
-        A.emplace_back(i);
-        ans = max(ans, dfs(N, M, Q, K, A));
-        A.pop_back();
+    int i = 0;
+    ll ans = LLONG_MAX;
+    if(crr.size() != 0) i = crr[crr.size()-1]+1;
+    for(; i<N; i++){
+        crr.emplace_back(i);
+        ans = min(ans, dfs(N, K, A, crr));
+        crr.pop_back();
     }
     return ans;
+}
+
+void dfs(vs &ans, int N, string &crr){
+    if(crr.size() == N){
+        ans.emplace_back(crr);
+        return;
+    }
+    int mx=0;
+    for(auto c: crr){
+        mx = max(mx, c-'a');
+    }
+    for(int i=0; i<=mx+1; i++){
+        crr += 'a' + i;
+        dfs(ans, N, crr);
+        crr.pop_back();
+    }
+    return;
 }
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    ll N, M, Q;
-    cin >> N >> M >> Q;
-    vll A;
-    vector<pair<pll, pll>> K(Q);
-    cin >> K;
-    ll ans = dfs(N, M, Q, K, A);
-    cout << ans << "\n";
+    int N;
+    cin >> N;
+    vs ans;
+    string crr = "a";
+    dfs(ans, N, crr);
+    sort(all(ans));
+    for(int i=0; i<ans.size(); i++) cout << ans[i] << "\n";
 }

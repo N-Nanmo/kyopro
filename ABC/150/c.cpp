@@ -23,40 +23,28 @@ using vpll = vector<pll>;
 #define cNo cout << "NO\n"
 #define cyes cout << "Yes\n"
 #define cno cout << "No\n"
-void rekkyo(int N,vs &ans, int cnt, string s, vb used) {
-    if(cnt == N){
-        ans.emplace_back(s);
-        return;
-    }
-    for(int i=1; i<=N; i++){
-        if(used[i-1]) continue;
-        used[i-1] = true;
-        rekkyo(N,ans, cnt + 1, s + to_string(i), used);
-        used[i-1] = false;
-    }
-}
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     int N;
     cin >> N;
-    vi P(N);
-    vi Q(N);
+    vi P(N), Q(N);
     for(int i=0; i<N; i++) cin >> P[i];
     for(int i=0; i<N; i++) cin >> Q[i];
-    string ps = "";
-    string qs = "";
-    for(int i=0; i<N; i++){
-        ps += to_string(P[i]);
-        qs += to_string(Q[i]);
-    }
+    vi R(N);
+    for(int i=0; i<N; i++) R[i] = i+1;
+    int a=0, b=0;
     int cnt = 0;
-    vs ans;
-    vb used(N, false);
-    rekkyo(N,ans, cnt, "",used);
-    sort(ans.begin(), ans.end());
-    int a, b;
-    a = find(ans.begin(), ans.end(), ps) - ans.begin() + 1;
-    b = find(ans.begin(), ans.end(), qs) - ans.begin() + 1;
-    cout << abs(a - b) << "\n";
+    do {
+        cnt++;
+        bool pa=true, qb=true;
+        for(int i=0; i<N; i++){
+            if(P[i] != R[i]) pa = false;
+            if(Q[i] != R[i]) qb = false;
+        }
+        if(pa) a = cnt;
+        if(qb) b = cnt;
+    }while (next_permutation(R.begin(), R.end()));
+    cout << abs(a-b) << "\n";
 }

@@ -59,23 +59,39 @@ inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v)
 }
 const double PI = 3.14159265359;
 
+ll dfs(int N, int K, vll &A, vll crr){
+    if(crr.size() == K){
+        ll exp = 0;
+        for(int i=0; i<K; i++){
+            exp += A[crr[i]];
+        }
+        string S = to_string(exp);
+        ll ans = 0;
+        for(int i=0; i<S.size(); i++){
+            ans += (S[i]-'0')%5;
+            ans += (S[i]-'0')/5;
+        }
+        return ans;
+    }else if(crr.size() != 0 && crr[crr.size()-1] == N-1){
+        return LLONG_MAX;
+    }
+    int i = 0;
+    ll ans = LLONG_MAX;
+    if(crr.size() != 0) i = crr[crr.size()-1]+1;
+    for(; i<N; i++){
+        crr.emplace_back(i);
+        ans = min(ans, dfs(N, K, A, crr));
+        crr.pop_back();
+    }
+    return ans;
+}
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    ll N;
-    cin >> N;
-    vpll A(N);
+    ll N, K;
+    cin >> N >> K;
+    vll A(N);
     cin >> A;
-    ll ans = LLONG_MAX;
-    for(int i=0; i<N; i++){
-        for(int o=0; o<N; o++){
-            ll cnt = 0;
-            for(int j=0; j<N; j++){
-                cnt += abs(A[i].first-A[j].first) + (A[j].second-A[j].first) + abs(A[o].second-A[j].second);
-            }
-            ans = min(ans, cnt);
-        }
-    }
-    cout << ans << "\n";
+    cout << dfs(N, K, A, {}) << "\n";
 }
