@@ -1,13 +1,10 @@
 #include <bits/stdc++.h>
-#include <atcoder/all>
-#pragma GCC optimize("O3")
+//#pragma GCC optimize("O2")
 using namespace std;
-using namespace atcoder;
 using ll = long long;
 using ull = unsigned long long;
 using vi = vector<int>;
 using vll = vector<ll>;
-using vull = vector<ull>;
 using vs = vector<string>;
 using vb = vector<bool>;
 using vc = vector<char>;
@@ -15,7 +12,6 @@ using vf = vector<float>;
 using vd = vector<double>;
 using vvi = vector<vector<int>>;
 using vvll = vector<vector<ll>>;
-using vvull = vector<vector<ull>>;
 using vvs = vector<vector<string>>;
 using vvc = vector<vector<char>>;
 using vvb = vector<vector<bool>>;
@@ -62,11 +58,24 @@ inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v)
     return is;
 }
 const double PI = 3.14159265359;
-vi dx = {0, -1, 0, 1};
-vi dy = {1, 0, -1, 0};
+vi dx = {0, 1, 0, -1};
+vi dy = {-1, 0, 1, 0};
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int X, Y;
+    pi L, A;
+    cin >> X >> Y;
+    cin >> L.first >> L.second;
+    cin >> A.first >> A.second;
+    ll ans = 0;
+    for(int i=A.first; i<A.second; i++){
+        if(L.first <= i && i < L.second){
+            ans += X;
+        }else{
+            ans += Y;
+        }
+    }
+    cout << ans << "\n";
 }

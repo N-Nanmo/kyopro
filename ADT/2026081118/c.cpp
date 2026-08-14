@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#pragma GCC optimize("O3")
+//#pragma GCC optimize("O2")
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
@@ -58,38 +58,32 @@ inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v)
     return is;
 }
 const double PI = 3.14159265359;
-
-ll dfs(int N, int K, vll &A, vll crr){
-    if(crr.size() == K){
-        ll exp = 0;
-        for(int i=0; i<K; i++){
-            exp += A[crr[i]];
-        }
-        string S = to_string(exp);
-        ll ans = 0;
-        for(int i=0; i<S.size(); i++){
-            ans += (S[i]-'0')%5;
-            ans += (S[i]-'0')/5;
-        }
-        return ans;
-    }else if(crr.size() != 0 && crr[crr.size()-1] == N-1){
-        return LLONG_MAX;
-    }
-    int i = 0;
-    ll ans = LLONG_MAX;
-    if(crr.size() != 0) i = crr[crr.size()-1]+1;
-    for(; i<N; i++){
-        crr.emplace_back(i);
-        ans = min(ans, dfs(N, K, A, crr));
-        crr.pop_back();
-    }
-    return ans;
-}
+vi dx = {0, 1, 0, -1};
+vi dy = {-1, 0, 1, 0};
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    string S;
-    cin >> S;
-    cout << (S[0] - '0')*(S[2] - '0') << "\n";
+    int H, W, N;
+    cin >> H >> W >> N;
+    vvi G(H, vi(W, 0));
+    int x=0, y=0, d=0;
+    for(int i=0; i<N; i++){
+        if(G[y][x] == 1){
+            G[y][x] = 0;
+            d = (d-1+4)%4;
+        }else{
+            G[y][x] = 1;
+            d = (d+1)%4;
+        }
+        x = (x+dx[d]+W)%W;
+        y = (y+dy[d]+H)%H;
+    }
+    for(int i=0; i<H; i++){
+        for(int j=0; j<W; j++){
+            if(G[i][j] == 0)cout << '.';
+            else cout << "#";
+        }
+        cout << "\n";
+    }
 }

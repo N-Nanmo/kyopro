@@ -29,5 +29,10 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int N;
+    cin >> N;
+    vi D(N);
+    for(int i=0; i<N; i++) cin >> D[i];
+    sort(D.rbegin(), D.rend());
+    cout << max(0, D[D.size()/2-1]-D[D.size()/2]) << "\n";
 }

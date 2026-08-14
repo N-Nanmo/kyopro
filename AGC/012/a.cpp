@@ -1,10 +1,13 @@
 #include <bits/stdc++.h>
+#include <atcoder/all>
 #pragma GCC optimize("O3")
 using namespace std;
+using namespace atcoder;
 using ll = long long;
 using ull = unsigned long long;
 using vi = vector<int>;
 using vll = vector<ll>;
+using vull = vector<ull>;
 using vs = vector<string>;
 using vb = vector<bool>;
 using vc = vector<char>;
@@ -12,6 +15,7 @@ using vf = vector<float>;
 using vd = vector<double>;
 using vvi = vector<vector<int>>;
 using vvll = vector<vector<ll>>;
+using vvull = vector<vector<ull>>;
 using vvs = vector<vector<string>>;
 using vvc = vector<vector<char>>;
 using vvb = vector<vector<bool>>;
@@ -58,53 +62,20 @@ inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v)
     return is;
 }
 const double PI = 3.14159265359;
-
-ll dfs(int N, int K, vll &A, vll crr){
-    if(crr.size() == K){
-        ll exp = 0;
-        for(int i=0; i<K; i++){
-            exp += A[crr[i]];
-        }
-        string S = to_string(exp);
-        ll ans = 0;
-        for(int i=0; i<S.size(); i++){
-            ans += (S[i]-'0')%5;
-            ans += (S[i]-'0')/5;
-        }
-        return ans;
-    }else if(crr.size() != 0 && crr[crr.size()-1] == N-1){
-        return LLONG_MAX;
-    }
-    int i = 0;
-    ll ans = LLONG_MAX;
-    if(crr.size() != 0) i = crr[crr.size()-1]+1;
-    for(; i<N; i++){
-        crr.emplace_back(i);
-        ans = min(ans, dfs(N, K, A, crr));
-        crr.pop_back();
-    }
-    return ans;
-}
+vi DX = {0, -1, 0, 1};
+vi DY = {1, 0, -1, 0};
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    ull N, T;
-    cin >> N >> T;
-    vector<ull> A(N);
+    int N;
+    cin >> N;
+    vi A(3*N);
     cin >> A;
-    for(int i=0; i<N-1; i++){
-        A[i+1] += A[i];
+    sort(rall(A));
+    ll ans = 0;
+    for(int i=1; i<2*N+1; i+=2){
+        ans += A[i];
     }
-    T %= A[N-1];
-    if(T <= A[0]){
-        cout << 1 << " " << T << "\n";
-        return 0;
-    }
-    for(int i=1; i<N; i++){
-        if(T <= A[i]){
-            cout << i+1 << " " << T-A[i-1] << "\n";
-            return 0;
-        }
-    }
+    cout << ans << "\n";
 }

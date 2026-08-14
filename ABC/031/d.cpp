@@ -1,8 +1,6 @@
 #include <bits/stdc++.h>
-#include <atcoder/all>
 #pragma GCC optimize("O3")
 using namespace std;
-using namespace atcoder;
 using ll = long long;
 using ull = unsigned long long;
 using vi = vector<int>;
@@ -10,11 +8,15 @@ using vll = vector<ll>;
 using vs = vector<string>;
 using vb = vector<bool>;
 using vc = vector<char>;
+using vf = vector<float>;
+using vd = vector<double>;
 using vvi = vector<vector<int>>;
 using vvll = vector<vector<ll>>;
 using vvs = vector<vector<string>>;
 using vvc = vector<vector<char>>;
 using vvb = vector<vector<bool>>;
+using vvf = vector<vector<float>>;
+using vvd = vector<vector<double>>;
 using pi = pair<int, int>;
 using pll = pair<ll, ll>;
 using vpi = vector<pi>;
@@ -23,9 +25,124 @@ using vpll = vector<pll>;
 #define cNo cout << "NO\n"
 #define cyes cout << "Yes\n"
 #define cno cout << "No\n"
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+template <typename T>
+inline istream& operator >> (istream& is, vector<T>& v){
+    for(size_t i=0; i<v.size(); i++){
+        is >> v[i];
+    }
+    return is;
+}
+template <typename T, typename U>
+inline istream& operator >> (istream& is, vector<pair<T,U>>& v){
+    for(size_t i=0; i<v.size(); i++){
+        is >> v[i].first >> v[i].second;
+    }
+    return is;
+}
+template <typename T>
+inline istream& operator >> (istream& is, vector<vector<T>>& v){
+    for(size_t i=0; i<v.size(); i++){
+        for(size_t j=0; j<v[i].size(); j++){
+            is >> v[i][j];
+        }
+    }
+    return is;
+}
+template <typename T, typename U, typename S, typename V>
+inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v){
+    for(size_t i=0; i<v.size(); i++){
+        is >> v[i].first.first >> v[i].first.second >> v[i].second.first >> v[i].second.second;
+    }
+    return is;
+}
+const double PI = 3.14159265359;
+
+ll dfs(int N, int K, vll &A, vll crr){
+    if(crr.size() == K){
+        ll exp = 0;
+        for(int i=0; i<K; i++){
+            exp += A[crr[i]];
+        }
+        string S = to_string(exp);
+        ll ans = 0;
+        for(int i=0; i<S.size(); i++){
+            ans += (S[i]-'0')%5;
+            ans += (S[i]-'0')/5;
+        }
+        return ans;
+    }else if(crr.size() != 0 && crr[crr.size()-1] == N-1){
+        return LLONG_MAX;
+    }
+    int i = 0;
+    ll ans = LLONG_MAX;
+    if(crr.size() != 0) i = crr[crr.size()-1]+1;
+    for(; i<N; i++){
+        crr.emplace_back(i);
+        ans = min(ans, dfs(N, K, A, crr));
+        crr.pop_back();
+    }
+    return ans;
+}
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int K, N;
+    cin >> K >> N;
+    ll mx = 1;
+    for(int i=0; i<K; i++){
+        mx *= 3;
+    }
+
+    vector<pair<string, string>> V(N);
+    cin >> V;
+
+    // 3進bit
+    for(int i=0; i<mx; i++){
+        vi B(K);
+        int crr = 1;
+        for(int j=0; j<K; j++){
+            B[j] = (i / crr) % 3 + 1;
+            crr *= 3;
+        }
+        vs S(K, "");
+        bool ng = false;
+        //各情報へ
+        for(int j=0; j<N; j++){
+            int crrs = 0;
+            //各文字へ
+            for(int k=0; k<V[j].first.size(); k++){
+                string s ="";
+                //その数字にBで指定されている分だけ持たせる
+                for(int l=0; l<B[V[j].first[k]-'1']; l++){
+                    if(crrs >= V[j].second.size()){
+                        ng = true;
+                        break;
+                    }
+                    s += V[j].second[crrs];
+                    crrs++;
+                }
+                if(S[V[j].first[k]-'1'].size() != 0 && S[V[j].first[k]-'1'] != s){
+                    ng = true;
+                }else{
+                    S[V[j].first[k]-'1'] = s;
+                }
+                if(ng){
+                    break;
+                }
+            }
+            if(crrs != V[j].second.size()) ng = true;
+            if(ng){
+                break;
+            }
+        } 
+        if(!ng){
+            for(int i=0; i<K; i++){
+                cout << S[i] << "\n";
+            }
+            return 0;
+        }
+    }
 }

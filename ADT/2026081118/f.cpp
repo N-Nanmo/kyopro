@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#pragma GCC optimize("O3")
+//#pragma GCC optimize("O2")
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
@@ -58,43 +58,29 @@ inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v)
     return is;
 }
 const double PI = 3.14159265359;
-
-ll dfs(int N, int K, vll &A, vll crr){
-    if(crr.size() == K){
-        ll exp = 0;
-        for(int i=0; i<K; i++){
-            exp += A[crr[i]];
-        }
-        string S = to_string(exp);
-        ll ans = 0;
-        for(int i=0; i<S.size(); i++){
-            ans += (S[i]-'0')%5;
-            ans += (S[i]-'0')/5;
-        }
-        return ans;
-    }else if(crr.size() != 0 && crr[crr.size()-1] == N-1){
-        return LLONG_MAX;
-    }
-    int i = 0;
-    ll ans = LLONG_MAX;
-    if(crr.size() != 0) i = crr[crr.size()-1]+1;
-    for(; i<N; i++){
-        crr.emplace_back(i);
-        ans = min(ans, dfs(N, K, A, crr));
-        crr.pop_back();
-    }
-    return ans;
-}
+vi dx = {0, 1, 0, -1};
+vi dy = {-1, 0, 1, 0};
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    int N, D;
-    string S;
-    cin >> N >> D >> S;
-    int ans = 0;
-    for(int i=0; i<N; i++){
-        if(S[i] == '@') ans++;
+    int N, M;
+    cin >> N >> M;
+    vi A(N);
+    cin >> A;
+    vi B(M);
+    cin >> B;
+    int a=0, b=0, ans = 0;
+    sort(all(A));
+    sort(all(B));
+    while(a < N && b < M){
+        if(A[a]*2 >= B[b]){
+            ans++;
+            a++;
+            b++;
+        }else if(A[a]*2 < B[b]){
+            a++;
+        }
     }
-    cout << N - max(0, ans-D) << "\n";
+    cout << ans << "\n";
 }

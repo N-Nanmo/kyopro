@@ -62,8 +62,8 @@ inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v)
     return is;
 }
 const double PI = 3.14159265359;
-vi dx = {0, -1, 0, 1};
-vi dy = {1, 0, -1, 0};
+vi DX = {0, -1, 0, 1};
+vi DY = {1, 0, -1, 0};
 
 int main() {
     ios::sync_with_stdio(false);

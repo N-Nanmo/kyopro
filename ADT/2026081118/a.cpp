@@ -59,50 +59,13 @@ inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v)
 }
 const double PI = 3.14159265359;
 
-ll dfs(int N, int K, vll &A, vll crr){
-    if(crr.size() == K){
-        ll exp = 0;
-        for(int i=0; i<K; i++){
-            exp += A[crr[i]];
-        }
-        string S = to_string(exp);
-        ll ans = 0;
-        for(int i=0; i<S.size(); i++){
-            ans += (S[i]-'0')%5;
-            ans += (S[i]-'0')/5;
-        }
-        return ans;
-    }else if(crr.size() != 0 && crr[crr.size()-1] == N-1){
-        return LLONG_MAX;
-    }
-    int i = 0;
-    ll ans = LLONG_MAX;
-    if(crr.size() != 0) i = crr[crr.size()-1]+1;
-    for(; i<N; i++){
-        crr.emplace_back(i);
-        ans = min(ans, dfs(N, K, A, crr));
-        crr.pop_back();
-    }
-    return ans;
-}
-
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    int N, M;
-    cin >> N >> M;
-    vpi C(N+M);
-    for(int i=0; i<N+M; i++){
-        cin >> C[i].first;
-        if(i<N)C[i].second = 0;
-        else C[i].second = 1;
+    string S;
+    cin >> S;
+    for(int i=0; i<S.size(); i++){
+        cout << (S[i]-'0'+1)%2;
     }
-    sort(all(C));
-    for(int i=1; i<N+M; i++){
-        if(C[i-1].second == 0 && C[i].second == 0){
-            cyes;
-            return 0;
-        }
-    }
-    cno;
+    cout << "\n";
 }

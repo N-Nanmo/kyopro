@@ -89,9 +89,33 @@ ll dfs(int N, int K, vll &A, vll crr){
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    ll N, K;
-    cin >> N >> K;
-    vll A(N);
-    cin >> A;
-    cout << dfs(N, K, A, {}) << "\n";
+    int N;
+    cin >> N;
+    vvi G(N);
+    for(int i=0; i<N; i++){
+        int a, b;
+        cin >> a >> b;
+        for(int j=0; j<b; j++){
+            int t;
+            cin >> t;
+            G[a-1].emplace_back(t-1);
+        }
+    }
+    vi B(N, -1);
+    B[0] = 0;
+    queue<int> q;
+    q.emplace(0);
+    while(!q.empty()){
+        int i = q.front();
+        q.pop();
+        for(int g : G[i]){
+            if(B[g] == -1){
+                q.emplace(g);
+                B[g] = B[i]+1;
+            }
+        }
+    }
+    for(int i=0; i<N; i++){
+        cout << i+1 << " " << B[i] << "\n";
+    }
 }

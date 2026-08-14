@@ -59,53 +59,29 @@ inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v)
 }
 const double PI = 3.14159265359;
 
-ll dfs(int N, int K, vll &A, vll crr){
-    if(crr.size() == K){
-        ll exp = 0;
-        for(int i=0; i<K; i++){
-            exp += A[crr[i]];
-        }
-        string S = to_string(exp);
-        ll ans = 0;
-        for(int i=0; i<S.size(); i++){
-            ans += (S[i]-'0')%5;
-            ans += (S[i]-'0')/5;
-        }
-        return ans;
-    }else if(crr.size() != 0 && crr[crr.size()-1] == N-1){
-        return LLONG_MAX;
-    }
-    int i = 0;
-    ll ans = LLONG_MAX;
-    if(crr.size() != 0) i = crr[crr.size()-1]+1;
-    for(; i<N; i++){
-        crr.emplace_back(i);
-        ans = min(ans, dfs(N, K, A, crr));
-        crr.pop_back();
-    }
-    return ans;
-}
-
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    int N;
-    cin >> N;
-    vvb G(101, vb(101, false));
-    for(int i=0; i<N; i++){
-        int a, b, c, d;
-        cin >> a >> b >> c >> d;
-        for(int j=a; j<b; j++){
-            for(int k=c; k<d; k++){
-                G[j][k] = true;
-            }
+    vi A(2);
+    cin >> A;
+    vb B(3);
+    for(int i=0; i<A.size(); i++){
+        if(A[i] >= 4){
+            B[0] = true;
+            A[i] -= 4;
+        }
+        if(A[i] >= 2){
+            B[1] = true;
+            A[i] -= 2;
+        }
+        if(A[i] >= 1){
+            B[2] = true;
+            A[i] -= 1;
         }
     }
     int ans = 0;
-    for(int i=0; i<=100; i++){
-        for(int j=0; j<=100; j++){
-            if(G[i][j]) ans++;
-        }
-    }
+    if(B[0]) ans += 4;
+    if(B[1]) ans += 2;
+    if(B[2]) ans += 1;
     cout << ans << "\n";
 }

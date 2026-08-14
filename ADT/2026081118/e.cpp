@@ -1,13 +1,10 @@
 #include <bits/stdc++.h>
-#include <atcoder/all>
-#pragma GCC optimize("O3")
+//#pragma GCC optimize("O2")
 using namespace std;
-using namespace atcoder;
 using ll = long long;
 using ull = unsigned long long;
 using vi = vector<int>;
 using vll = vector<ll>;
-using vull = vector<ull>;
 using vs = vector<string>;
 using vb = vector<bool>;
 using vc = vector<char>;
@@ -15,7 +12,6 @@ using vf = vector<float>;
 using vd = vector<double>;
 using vvi = vector<vector<int>>;
 using vvll = vector<vector<ll>>;
-using vvull = vector<vector<ull>>;
 using vvs = vector<vector<string>>;
 using vvc = vector<vector<char>>;
 using vvb = vector<vector<bool>>;
@@ -62,11 +58,39 @@ inline istream& operator >> (istream& is, vector<pair<pair<T,U>, pair<S,V>>>& v)
     return is;
 }
 const double PI = 3.14159265359;
-vi dx = {0, -1, 0, 1};
-vi dy = {1, 0, -1, 0};
+vi dx = {0, 1, 0, -1};
+vi dy = {-1, 0, 1, 0};
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int N, M;
+    cin >> N >> M;
+    vi K(M);
+    vvi A(M);
+    map<int, vi> mp;
+    for(int i=0; i<M; i++){
+        int k;
+        cin >> k;
+        K[i] = k;
+        A[i].resize(k);
+        for(int j=0; j<k; j++){
+            int a;
+            cin >> A[i][j];
+            mp[A[i][j]].emplace_back(i);
+        }
+    }
+    vi B(N);
+    cin >> B;
+    vi C(M, 0);
+    ll ans = 0;
+    for(int i=0; i<N; i++){
+        for(int m : mp[B[i]]){
+            C[m]++;
+            if(C[m] == K[m]){
+                ans++;
+            }
+        }
+        cout << ans << "\n";
+    }
 }

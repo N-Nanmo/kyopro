@@ -29,5 +29,21 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
+    ll N;
+    cin >> N;
+    vll A(N), B(N), C(N);
+    for(int i=0; i<N; i++) cin >> A[i];
+    for(int i=0; i<N; i++) cin >> B[i];
+    for(int i=0; i<N; i++) cin >> C[i];
+    sort(A.begin(), A.end());
+    sort(C.begin(), C.end());
     
+    ull ans = 0;
+    for(int i=0; i<N; i++){
+        ll a = lower_bound(A.begin(), A.end(), B[i])-A.begin();
+        ll c = C.end()-upper_bound(C.begin(), C.end(), B[i]);
+        //cout << a << " " << c << "\n";
+        ans += max(0LL, a*c);
+    }
+    cout << ans << "\n";
 }
