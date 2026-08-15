@@ -27,5 +27,30 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int N, M;
+    cin >> N >> M;
+    vi A(N);
+    vb B(N, false);
+    while(M--){
+        int p;
+        string S;
+        cin >> p >> S;
+        if(S == "AC"){
+            B[p-1] = true;
+        }else{
+            if(!B[p-1]){
+                A[p-1]++;
+            }
+        }
+    }
+    pi WA;
+    for(int i=0; i<N; i++){
+        if(B[i]){
+            WA.second += A[i];
+        }
+    }
+    for(int i=0; i<N; i++){
+        if(B[i]) WA.first++;
+    }
+    cout << WA.first << " " << WA.second << "\n";
 }

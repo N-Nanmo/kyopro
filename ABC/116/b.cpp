@@ -26,21 +26,21 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
+    map<int, int> A;
     int S;
     cin >> S;
-    vb apeared(10000001, false);
-    int N = S;
-    int i=1;
-    apeared[N] = true;
+    int crr = 0;
     while(true){
-        i++;
-        if(N%2 == 0) N /= 2;
-        else N = 3*N + 1;
-        if(apeared[N]){
-            cout << i << "\n";
+        crr++;
+        if(A[S] >= 1){
+            cout << crr << "\n";
             return 0;
+        }
+        A[S]++;
+        if(S%2 == 0){
+            S /= 2;
         }else{
-            apeared[N] = true;
+            S = S*3+1;
         }
     }
 }

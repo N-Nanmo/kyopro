@@ -27,5 +27,25 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int N;
+    cin >> N;
+    vi A(26, INT_MAX);
+    vs S(N);
+    for(int i=0; i<N; i++) cin >> S[i];
+    for(int i=0; i<N; i++){
+        vi ABC(26, 0);
+        for(auto s : S[i]){
+            ABC[s-'a']++;
+        }
+        for(int j=0; j<26; j++){
+            A[j] = min(A[j], ABC[j]);
+        }
+    }
+    string ans = "";
+    for(int i=0; i<26; i++){
+        if(A[i] != INT_MAX){
+            ans += string(A[i], i+'a');
+        }
+    }
+    cout << ans << "\n";
 }

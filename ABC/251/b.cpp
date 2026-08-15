@@ -27,5 +27,19 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int N, W;
+    cin >> N >> W;
+    vi A(N);
+    for(int i=0; i<N; i++) cin >> A[i];
+    unordered_set<int> S;
+    for(int i=0; i<N; i++){
+        if(A[i] <= W) S.emplace(A[i]);
+        for(int j=i+1; j<N; j++){
+            if(A[i]+A[j] <= W) S.emplace(A[i]+A[j]);
+            for(int k=j+1; k<N+2; k++){
+                if(A[i]+A[j]+A[k] <= W) S.emplace(A[i]+A[j]+A[k]);
+            }
+        }
+    }
+    cout << S.size() << "\n";
 }

@@ -27,5 +27,17 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    string S;
+    cin >> S;
+    vi A(26, 0);
+    for(int i=0; i<S.size(); i++){
+        A[S[i]-'a']++;
+    }
+    for(int i=0; i<26; i++){
+        if(A[i] == 0){
+            cout << (char)(i+'a') << "\n";
+            return 0;
+        }
+    }
+    cout << "None\n";
 }

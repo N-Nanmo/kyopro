@@ -27,5 +27,24 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    ll N, M, T;
+    cin >> N >> M >> T;
+    vll A(N, 0);
+    vll B(N, 0);
+    for(ll i=0; i<N-1; i++) cin >> A[i];
+    while(M--){
+        ll x, y;
+        cin >> x >> y;
+        if(x == 1) T += y;
+        else B[x-2] += y;
+    }
+    for(ll i=0; i<N-1; i++){
+        T -= A[i];
+        if(T <= 0){
+            cno;
+            return 0;
+        }
+        T += B[i];
+    }
+    cyes;
 }

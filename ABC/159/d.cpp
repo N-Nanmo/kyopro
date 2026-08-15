@@ -65,5 +65,17 @@ const double PI = 3.14159265359;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    ll N;
+    cin >> N;
+    vll A(N);
+    cin >> A;
+    unordered_map<ll, ll> mp;
+    for(ll i=0; i<N; i++) mp[A[i]]++;
+    ll sm = 0;
+    for(auto m : mp){
+        sm += m.second*(m.second-1)/2;
+    }
+    for(ll i=0; i<N; i++){
+        cout << sm - mp[A[i]]*(mp[A[i]]-1)/2 + (mp[A[i]]-1)*(mp[A[i]]-2)/2 << "\n";
+    }
 }

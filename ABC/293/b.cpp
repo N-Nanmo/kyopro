@@ -27,5 +27,20 @@ using vpll = vector<pll>;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int N;
+    cin >> N;
+    vi A(N);
+    for(int i=0; i<N; i++) cin >> A[i];
+    map<int, int> P;
+    vi X;
+    for(int i=0; i<N; i++){
+        if(P[i+1] == 0){
+            P[A[i]]++;
+        }
+    }
+    for(int i=0; i<N; i++){
+        if(P[i+1] == 0) X.emplace_back(i+1);
+    }
+    cout << X.size() << "\n";
+    for(int i=0; i<X.size(); i++) cout << X[i] << " \n"[i==N-1];
 }
