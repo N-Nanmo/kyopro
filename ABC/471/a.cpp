@@ -68,5 +68,8 @@ vi dy = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int A, B;
+    cin >> A >> B;
+    if(A+B == 9 || A-B == 9 || A*B == 9 || (A/B == 9 && 9*B == A)) cout << "Nine\n";
+    else cout << "Nein\n";
 }

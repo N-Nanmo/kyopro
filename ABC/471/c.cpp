@@ -68,5 +68,31 @@ vi dy = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int N;
+    cin >> N;
+    vll A(N);
+    cin >> A;
+    A.emplace_back(0);
+    sort(all(A));
+    vll M, P;
+    for(int i=0; i<=N; i++){
+        if(A[i]<0)M.emplace_back(A[i+1]-A[i]);
+        if(A[i]>0)P.emplace_back(A[i]-A[i-1]);
+    }
+    reverse(all(P));
+    ll ans = 0;
+    while(!M.empty() && !P.empty()){
+        if(M.back() <= P.back()){
+            ans += M.back();
+            P.back() += M.back();
+            M.pop_back();
+        }else{
+            ans += P.back();
+            M.back() += P.back();
+            P.pop_back();
+        }
+    }
+    for(int i=0; i<M.size(); i++) ans += M[i];
+    for(int i=0; i<P.size(); i++) ans += P[i];
+    cout << ans << "\n";
 }

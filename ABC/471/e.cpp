@@ -1,3 +1,4 @@
+#include "atcoder/modint.hpp"
 #include <bits/stdc++.h>
 #include <atcoder/all>
 #pragma GCC optimize("O3")
@@ -65,8 +66,34 @@ const double PI = 3.14159265359;
 vi dx = {0, -1, 0, 1};
 vi dy = {1, 0, -1, 0};
 
+void dfs(ll &N, ll &K, vll &A, modint998244353 &ans, ull &sm, ll crr, ll &cnt){
+    if(cnt == K){
+        ans += sm*sm;
+        // cout << sm << "\n";
+        return;
+    }
+    if(crr >= N) return;
+
+    for(int i=crr; i<N; i++){
+        sm += A[i];
+        cnt++;
+        dfs(N, K, A, ans, sm, i+1, cnt);
+        sm -= A[i];
+        cnt--;
+    }
+}
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    ll N, K;
+    cin >> N >> K;
+    vll A(N);
+    cin >> A;
+    modint998244353 ans = 0;
+    ull sm = 0;
+    ll crr = 0;
+    ll cnt = 0;
+    dfs(N, K, A, ans, sm, crr, cnt);
+    cout << ans.val() << "\n";
 }

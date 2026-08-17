@@ -68,5 +68,25 @@ vi dy = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    ll Q, V;
+    cin >> Q >> V;
+    priority_queue<ll> pq;
+    while(Q--){
+        int type;
+        cin >> type;
+        if(type == 1){
+            ll t, w;
+            cin >> t >> w;
+            pq.emplace(w-t);
+            // cout << w-t << "D\n";
+        }else{
+            ll t;
+            cin >> t;
+            if(pq.empty()) cout << "-1\n";
+            else{
+                cout << min((ll)V, pq.top()+t) << "\n";
+                pq.pop();
+            }
+        }
+    }
 }

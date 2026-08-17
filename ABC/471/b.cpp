@@ -68,5 +68,23 @@ vi dy = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    map<string, ll> mp;
+    int N;
+    cin >> N;
+    vs S(N);
+    cin >> S;
+    for(int i=0; i<N; i++){
+        string crr = "";
+        for(int j=0; j<S[i].size(); j++){
+            if(S[i][j] < 'a') S[i][j] += 'a'-'A';
+            crr += S[i][j];
+        }
+        mp[S[i]]++;
+    }
+    ll ans = 0;
+    for(auto m : mp){
+        // cout << m.first << m.second << "\n";
+        ans = max(ans, m.second);
+    }
+    cout << ans << "\n";
 }
