@@ -68,24 +68,14 @@ vi dy = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    string S;
-    cin >> S;
-    int K;
-    cin >> K;
-    map<string, int> mp;
-    vs ans;
-    for(int i=0; i<S.size(); i++){
-        string s = "";
-        for(int j=i; j<min(i+K,(int)S.size()); j++){
-            s += S[j];
-            if(mp[s] == 0){
-                ans.emplace_back(s);
-            }
-            sort(all(ans));
-            while(ans.size() > K) ans.pop_back();
-            mp[s]++;
-        }
+    ull ans = 0;
+    ull N, A, B;
+    cin >> N >> A >> B;
+    ans += (N)*(N+1)/2;
+    ans -= ((N/B)*B)*(N/B+1)/2;
+    if(A != B){
+        ans += ((N/lcm(A, B))*lcm(A, B))*(N/lcm(A, B)+1)/2;
+        ans -= ((N/A)*A)*(N/A+1)/2;
     }
-    sort(all(ans));
-    cout << ans[K-1] << "\n";
+    cout << ans << "\n";
 }

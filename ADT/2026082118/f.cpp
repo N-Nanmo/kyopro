@@ -68,24 +68,21 @@ vi dy = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    string S;
-    cin >> S;
-    int K;
-    cin >> K;
-    map<string, int> mp;
-    vs ans;
-    for(int i=0; i<S.size(); i++){
-        string s = "";
-        for(int j=i; j<min(i+K,(int)S.size()); j++){
-            s += S[j];
-            if(mp[s] == 0){
-                ans.emplace_back(s);
-            }
-            sort(all(ans));
-            while(ans.size() > K) ans.pop_back();
-            mp[s]++;
-        }
+    int N;
+    cin >> N;
+    vector<pair<pll, int>> A(N);
+    for(int i=0; i<N; i++){
+        ll a, b;
+        cin >> a >> b;
+        A[i] = make_pair(make_pair(a, b), i+1);
     }
-    sort(all(ans));
-    cout << ans[K-1] << "\n";
+    sort(all(A), [](const auto &left, const auto &right){
+        if(left.first.first*(right.first.first+right.first.second) != right.first.first*(left.first.first+left.first.second)){
+            return left.first.first*(right.first.first+right.first.second) > right.first.first*(left.first.first+left.first.second);
+        }
+        return left.second < right.second;
+    });
+    for(int i=0; i<N; i++){
+        cout << A[i].second << " \n"[i==N-1];
+    }
 }

@@ -70,22 +70,13 @@ int main() {
     cin.tie(nullptr);
     string S;
     cin >> S;
-    int K;
-    cin >> K;
-    map<string, int> mp;
-    vs ans;
-    for(int i=0; i<S.size(); i++){
-        string s = "";
-        for(int j=i; j<min(i+K,(int)S.size()); j++){
-            s += S[j];
-            if(mp[s] == 0){
-                ans.emplace_back(s);
-            }
-            sort(all(ans));
-            while(ans.size() > K) ans.pop_back();
-            mp[s]++;
-        }
+    string A = "";
+    A += S[3];
+    A += S[4];
+    A += S[5];
+    if(1 <= stoi(A) && stoi(A) <= 349 && stoi(A) != 316){
+        cyes;
+    }else{
+        cno;
     }
-    sort(all(ans));
-    cout << ans[K-1] << "\n";
 }
