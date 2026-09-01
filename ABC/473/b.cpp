@@ -68,35 +68,17 @@ vi dy = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    vi A(3);
-    vi B(3, INT_MAX);
-    vvi C(3, vi(3));
-    cin >> C;
-    for(int i=0; i<3; i++){
-        int mn = C[i][0];
-        for(int j=1; j<3; j++){
-            mn = min(mn, C[i][j]);
-        }
-        A[i] = mn;
+    ll N;
+    cin >> N;
+    vll A(N);
+    cin >> A;
+    map<ll, ll> mp;
+    for(int i=0; i<N; i++){
+        mp[A[i]]++;
     }
-    for(int j=0; j<3; j++){
-        for(int b=0; b<=100; b++){
-            bool flag = true;
-            for(int i=0; i<3; i++){
-                if(C[i][j] != A[i]+b) flag = false;
-            }
-            if(flag){
-                B[j] = b;
-                break;
-            }
-        }
-        if(B[j] == INT_MAX){
-            cno;
-            return 0;
-        }
+    ll sm = 0;
+    for(auto m: mp){
+        if(m.second%2 == 1)sm += m.first;
     }
-    cyes;
-
-    // for(int i=0; i<3; i++) cout << A[i] << "\n";
-    // for(int i=0; i<3; i++) cout << B[i] << "\n";
+    cout << sm << "\n";
 }

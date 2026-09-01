@@ -68,35 +68,42 @@ vi dy = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    vi A(3);
-    vi B(3, INT_MAX);
-    vvi C(3, vi(3));
-    cin >> C;
-    for(int i=0; i<3; i++){
-        int mn = C[i][0];
-        for(int j=1; j<3; j++){
-            mn = min(mn, C[i][j]);
-        }
-        A[i] = mn;
-    }
-    for(int j=0; j<3; j++){
-        for(int b=0; b<=100; b++){
-            bool flag = true;
-            for(int i=0; i<3; i++){
-                if(C[i][j] != A[i]+b) flag = false;
+    int N, Q;
+    cin >> N >> Q;
+    vvi G(N, vi());
+    vi T(N, -1);
+    int black = 0;
+    int white = 0;
+    while(Q--){
+        int u, v;
+        cin >> u >> v;
+        u--, v--;
+        G[u].emplace_back(v);
+        G[v].emplace_back(u);
+        if(T[u] == -1 && T[v] == -1){
+            T[u] = 1;
+            black++;
+            T[v] = 0;
+            white++;
+        }else if(T[u] == T[v]){
+            cout << -1 << "\n";
+            while(Q--){
+                cout << -1 << "\n";
             }
-            if(flag){
-                B[j] = b;
-                break;
-            }
-        }
-        if(B[j] == INT_MAX){
-            cno;
             return 0;
+        }else{
+            if(T[u] == -1){
+                T[u] = (T[v]+1)%2;
+                if(T[v] == 1) white++;
+                else black++;
+            }
+            if(T[v] == -1){
+                T[v] = (T[u]+1)%2;
+                if(T[u] == 1) white++;
+                else black++;
+            }
         }
+        cout << min(black, white) << "\n";
+        cerr << black << " " << white << "\n";
     }
-    cyes;
-
-    // for(int i=0; i<3; i++) cout << A[i] << "\n";
-    // for(int i=0; i<3; i++) cout << B[i] << "\n";
 }

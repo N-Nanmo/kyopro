@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include <atcoder/all>
-#pragma GCC optimize("O3")
+//#pragma GCC optimize("O3")
 using namespace std;
 using namespace atcoder;
 using ll = long long;
@@ -65,38 +65,38 @@ const double PI = 3.14159265359;
 vi dx = {0, -1, 0, 1};
 vi dy = {1, 0, -1, 0};
 
+void dfs(vll &A, ll &cnt, ll &crr, ll &N, vvll &ans){
+    if(cnt == N-1){
+        A[0] = crr;
+        ans.emplace_back(A);
+        cout << flush;
+        return;
+    }
+    for(int i=0; i<=crr/(N-cnt); i++){
+        crr -= (N-cnt)*i;
+        A[N-cnt-1] = i;
+        cnt++;
+        dfs(A, cnt, crr, N, ans);
+        cnt--;
+        crr += (N-cnt)*i;
+        A[N-cnt-1] = -1;
+    }
+}
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    vi A(3);
-    vi B(3, INT_MAX);
-    vvi C(3, vi(3));
-    cin >> C;
-    for(int i=0; i<3; i++){
-        int mn = C[i][0];
-        for(int j=1; j<3; j++){
-            mn = min(mn, C[i][j]);
-        }
-        A[i] = mn;
-    }
-    for(int j=0; j<3; j++){
-        for(int b=0; b<=100; b++){
-            bool flag = true;
-            for(int i=0; i<3; i++){
-                if(C[i][j] != A[i]+b) flag = false;
-            }
-            if(flag){
-                B[j] = b;
-                break;
-            }
-        }
-        if(B[j] == INT_MAX){
-            cno;
-            return 0;
+    ll N, K;
+    cin >> N >> K;
+    vll A(N, -1);
+    ll cnt = 0;
+    ll crr = K;
+    vvll ans;
+    dfs(A, cnt, crr, N, ans);
+    sort(all(ans));
+    for(int i=0; i<ans.size(); i++){
+        for(int j=0; j<N; j++){
+            cout << ans[i][j] << " \n"[j==N-1];
         }
     }
-    cyes;
-
-    // for(int i=0; i<3; i++) cout << A[i] << "\n";
-    // for(int i=0; i<3; i++) cout << B[i] << "\n";
 }

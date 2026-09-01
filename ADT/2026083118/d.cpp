@@ -68,35 +68,37 @@ vi dy = {1, 0, -1, 0};
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    vi A(3);
-    vi B(3, INT_MAX);
-    vvi C(3, vi(3));
-    cin >> C;
-    for(int i=0; i<3; i++){
-        int mn = C[i][0];
-        for(int j=1; j<3; j++){
-            mn = min(mn, C[i][j]);
-        }
-        A[i] = mn;
+    vb D(360, false);
+    D[0] = true;
+    int N;
+    cin >> N;
+    vi A(N);
+    cin >> A;
+    int crr = 0;
+    for(int i=0; i<N; i++){
+        crr += A[i];
+        crr %= 360;
+        D[crr] = true;
+        cerr << crr << "\n";
     }
-    for(int j=0; j<3; j++){
-        for(int b=0; b<=100; b++){
-            bool flag = true;
-            for(int i=0; i<3; i++){
-                if(C[i][j] != A[i]+b) flag = false;
-            }
-            if(flag){
-                B[j] = b;
-                break;
-            }
+    vi ans;
+    int dig = 0;
+    for(int i=0; i<360; i++){
+        if(D[i] == true){
+            ans.emplace_back(dig);
+            dig = 0;
         }
-        if(B[j] == INT_MAX){
-            cno;
-            return 0;
+        dig++;
+    }
+    if(dig != 0){
+        if(ans.size() == 0) {
+            ans.emplace_back(dig);
+        }else{
+            ans[0] += dig;
         }
     }
-    cyes;
-
-    // for(int i=0; i<3; i++) cout << A[i] << "\n";
-    // for(int i=0; i<3; i++) cout << B[i] << "\n";
+    for(int i=0; i<ans.size(); i++){
+        cerr << ans[i] << "\n";
+    }
+    cout << *max_element(all(ans)) << "\n";
 }
